@@ -1,9 +1,9 @@
 import streamlit as st
 
 if "role" not in st.session_state:
-    st.session_state.role = None
+    st.session_state.role = "Página inicial"
 
-ROLES = [None, "Questões", "Avaliações", "Admin"]
+ROLES = ["Página inicial", "Questões", "Avaliações", "Admin"]
 
 
 def login():
@@ -17,58 +17,58 @@ def login():
 
 
 def logout():
-    st.session_state.role = None
+    st.session_state.role = "Home"
     st.rerun()
 
 
 role = st.session_state.role
 
 logout_page = st.Page(logout, title="Sair da conta", icon=":material/logout:")
-settings = st.Page("config.py", title="Configuração", icon=":material/settings:")
-request_1 = st.Page(
-    "request/request_1.py",
+config = st.Page("config.py", title="Configuração", icon=":material/settings:")
+questoes = st.Page(
+    "request/questoes1.py",
     title="Questões",
     icon=":material/help:",
     default=(role == "Questões"),
 )
-request_2 = st.Page(
-    "request/request_2.py", title="Questões", icon=":material/bug_report:"
+questoes2 = st.Page(
+    "request/questoes2.py", title="Questões", icon=":material/bug_report:"
 )
-respond_1 = st.Page(
-    "respond/respond_1.py",
+avaliacoes = st.Page(
+    "respond/avaliacoes1.py",
     title="Avaliações",
     icon=":material/healing:",
     default=(role == "Avaliações"),
 )
-respond_2 = st.Page(
-    "respond/respond_2.py", title="Avaliações", icon=":material/handyman:"
+avaliacoes2 = st.Page(
+    "respond/avaliacoes2.py", title="Avaliações", icon=":material/handyman:"
 )
-admin_1 = st.Page(
-    "admin/admin_1.py",
+admin1 = st.Page(
+    "admin/admin1.py",
     title="Admin 1",
     icon=":material/person_add:",
     default=(role == "Admin"),
 )
-admin_2 = st.Page("admin/admin_2.py", title="Admin 2", icon=":material/security:")
+admin2 = st.Page("admin/admin2.py", title="Admin 2", icon=":material/security:")
 
-account_pages = [logout_page, settings]
-request_pages = [request_1, request_2]
-respond_pages = [respond_1, respond_2]
-admin_pages = [admin_1, admin_2]
+conta = [logout_page, config]
+questoes_paginas = [questoes, questoes2]
+avaliacoes_paginas = [avaliacoes, avaliacoes2]
+admin_paginas = [admin1, admin2]
 
-st.title("Login")
+st.title(st.session_state.role)
 st.logo("images/image.png", icon_image="images/icon_blue.png")
 
 page_dict = {}
 if st.session_state.role in ["Questões", "Admin"]:
-    page_dict["Questões"] = request_pages
+    page_dict["Questões"] = questoes_paginas
 if st.session_state.role in ["Avaliações", "Admin"]:
-    page_dict["Avaliações"] = respond_pages
+    page_dict["Avaliações"] = avaliacoes_paginas
 if st.session_state.role == "Admin":
-    page_dict["Admin"] = admin_pages
+    page_dict["Admin"] = admin_paginas
 
 if len(page_dict) > 0:
-    pg = st.navigation({"Account": account_pages} | page_dict)
+    pg = st.navigation({"Account": conta} | page_dict)
 else:
     pg = st.navigation([st.Page(login)])
 
