@@ -92,11 +92,31 @@ def list_exercise_directories():
         # Ordenar os diretórios de forma numérica (do nível 1 ao nível 10)
         level_dirs.sort(key=lambda x: int(x.split()[-1]))  # Ordena pelos números dos níveis
 
-        st.write(f"Caminho base: {os.path.abspath(base_path)}")  # Exibe o caminho absoluto para debugging
-    else:
-        st.write(f"O diretório '{base_path}' não foi encontrado.")
-
     return level_dirs
+
+# Função para verificar se um arquivo existe
+def file_exists(directory, filename):
+    return os.path.exists(os.path.join(directory, filename))
+
+# Função para criar os arquivos .py e .md
+def create_code_and_markdown_files(directory, exercise_name):
+    # Criar o arquivo Python
+    code_file_path = os.path.join(directory, f"{exercise_name}.py")
+    if not file_exists(directory, f"{exercise_name}.py"):
+        with open(code_file_path, "w") as file:
+            file.write("# Código para o exercício\n")
+        st.success(f"Arquivo {code_file_path} criado com sucesso!")
+    else:
+        st.info(f"O arquivo {code_file_path} já existe.")
+
+    # Criar o arquivo Markdown
+    markdown_file_path = os.path.join(directory, f"{exercise_name}.md")
+    if not file_exists(directory, f"{exercise_name}.md"):
+        with open(markdown_file_path, "w") as file:
+            file.write("# Descrição do exercício\n")
+        st.success(f"Arquivo {markdown_file_path} criado com sucesso!")
+    else:
+        st.info(f"O arquivo {markdown_file_path} já existe.")
 
 # Função para listar os arquivos dentro de um diretório
 def list_files_in_directory(directory):
@@ -105,14 +125,11 @@ def list_files_in_directory(directory):
         if os.path.exists(directory):
             # Lista os arquivos no diretório
             files = os.listdir(directory)
-            st.write(f"Arquivos encontrados em {directory}: {files}")  # Exibe os arquivos para debugging
             return files
         else:
-            st.write(f"O diretório {directory} não existe.")
             return None
     except Exception as e:
-        st.write(f"Erro ao acessar o diretório: {e}")
-        return None
+        return f"Erro ao acessar o diretório: {e}"
 
 # Criar o banco de dados e as tabelas caso ainda não exista
 create_db()
@@ -135,13 +152,17 @@ if levels:
     st.subheader("Exercícios Criados")
     exercises = get_exercises(selected_level_id)
 
-    # Exibir os exercícios em layout de carrossel (lado a lado)
+    # Verificar se há exercícios
     if exercises:
         exercise_count = len(exercises)
         exercises_per_page = 3  # Número de exercícios por "página"
         max_page = (exercise_count // exercises_per_page) + (1 if exercise_count % exercises_per_page > 0 else 0)
 
-        page = st.slider("Escolha a página", min_value=0, max_value=max_page - 1, step=1)
+        # Verificar se existe algum exercício no nível
+        if exercise_count > 0:
+            page = st.slider("Escolha a página", min_value=0, max_value=max_page, step=1)
+        else:
+            page = 0  # Caso não haja exercícios, o slider será desabilitado
 
         start = page * exercises_per_page
         end = start + exercises_per_page
@@ -195,13 +216,17 @@ if level_dirs:
     code_files = list_files_in_directory(os.path.join("exercícios", selected_code_path))
     markdown_files = list_files_in_directory(os.path.join("exercícios", selected_markdown_path))
 
-    # Exibir os arquivos encontrados para validar
-    st.write("Arquivos de código encontrados:", code_files)
-    st.write("Arquivos de markdown encontrados:", markdown_files)
+    # Se não houver arquivos .py ou .md, oferecer a opção de criar
+    if not code_files:
+        st.write(f"Não há arquivos .py no diretório {selected_code_path}.")
+        create_code_and_markdown_files(os.path.join("exercícios", selected_code_path), exercise_name)
+    if not markdown_files:
+        st.write(f"Não há arquivos .md no diretório {selected_markdown_path}.")
+        create_code_and_markdown_files(os.path.join("exercícios", selected_markdown_path), exercise_name)
 
     if st.button("Criar Exercício") and exercise_name and selected_code_path and selected_markdown_path:
-        code_path = os.path.join("exercicios", selected_code_path, "Imprimir_valores.py")  # Exemplo de caminho para o código
-        markdown_path = os.path.join("exercicios", selected_markdown_path, "Estudos.md")  # Exemplo de caminho para o markdown
+        code_path = os.path.join("exercícios", selected_code_path, f"{exercise_name}.py")
+        markdown_path = os.path.join("exercícios", selected_markdown_path, f"{exercise_name}.md")
         create_exercise(selected_level_id, exercise_name, code_path, markdown_path)
 else:
     st.write("Nenhuma pasta encontrada para selecionar. Certifique-se de que as pastas de exercício estão corretamente configuradas.")
