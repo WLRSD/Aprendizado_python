@@ -1,97 +1,207 @@
+import os
+import sqlite3
 import streamlit as st
 
-# Inicializa 'exercicios' e 'niveis' no session_state se não estiverem presentes
-if "exercicios" not in st.session_state:
-    st.session_state.exercicios = {"Fundamentos de Python": [], "Estruturas Condicionais": []}
+# Função para criar o banco de dados e as tabelas (essa função deve ser chamada uma vez no início)
+def create_db():
+    connection = sqlite3.connect('exercises.db')  # Cria ou abre o banco de dados
+    cursor = connection.cursor()
 
-if "niveis" not in st.session_state:
-    st.session_state.niveis = ["Fundamentos de Python", "Estruturas Condicionais"]
+    # Criar tabela 'levels' (níveis de exercício)
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS levels (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT UNIQUE
+    );
+    ''')
 
-# Função para exibir os níveis com as caixas clicáveis
-def exibir_nivel_caixas():
-    st.subheader("Escolha um nível de exercício")
+    # Criar tabela 'exercises' (exercícios)
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS exercises (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        level_id INTEGER,
+        name TEXT,
+        code_path TEXT,
+        markdown_path TEXT,
+        completed INTEGER,
+        FOREIGN KEY (level_id) REFERENCES levels (id)
+    );
+    ''')
 
-    # Exibindo os níveis como caixas clicáveis
-    for nivel in st.session_state.niveis:
-        if st.button(nivel, key=nivel):  # A chave 'key' ajuda a evitar o erro de IDs duplicados
-            st.session_state.selected_level = nivel
-            st.session_state.exercicio_nome = ""  # Limpa o nome do exercício ao mudar de nível
-            st.session_state.exercicio_criado = False  # Marca que o exercício não foi criado
-            st.rerun()  # Recarrega a página
+    connection.commit()  # Confirma as mudanças
+    connection.close()  # Fecha a conexão com o banco
 
-    # Exibindo os exercícios criados para o nível selecionado
-    st.subheader("Exercícios Criados:")
-    if st.session_state.selected_level:
-        nivel_selecionado = st.session_state.selected_level
-        exercicios_criados = st.session_state.exercicios.get(nivel_selecionado, [])
-        
-        if exercicios_criados:
-            for exercicio in exercicios_criados:
-                st.markdown(f"- {exercicio}")  # Exibe o exercício
-        else:
-            st.write("Nenhum exercício criado ainda.")
+# Função para adicionar um novo nível ao banco de dados
+def create_level(level_name):
+    connection = sqlite3.connect('exercises.db')
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO levels (name) VALUES (?)', (level_name,))
+    connection.commit()
+    connection.close()
+    st.success(f"Nível '{level_name}' criado com sucesso!")
 
-# Função para mostrar o input de exercício
-def mostrar_input_exercicio(nivel):
-    st.subheader(f"Digite o nome do exercício para o nível {nivel}:")
-    
-    nome_exercicio = st.text_input("Nome do exercício", value=st.session_state.get("exercicio_nome", ""))
+# Função para adicionar um exercício ao banco de dados
+def create_exercise(level_id, exercise_name, code_path, markdown_path):
+    connection = sqlite3.connect('exercises.db')
+    cursor = connection.cursor()
+    cursor.execute('''
+    INSERT INTO exercises (level_id, name, code_path, markdown_path, completed)
+    VALUES (?, ?, ?, ?, ?)
+    ''', (level_id, exercise_name, code_path, markdown_path, 0))  # 0 significa que o exercício ainda não foi feito
+    connection.commit()
+    connection.close()
+    st.success(f"Exercício '{exercise_name}' criado com sucesso!")
 
-    if st.button("Enviar") and nome_exercicio != "":
-        nome_exercicio = nome_exercicio.lower()  # Converte o nome do exercício para minúsculo
-        if nome_exercicio in [ex.lower() for ex in st.session_state.exercicios[nivel]]:
-            st.error(f"O exercício '{nome_exercicio}' já foi criado para o nível {nivel}.")
-        else:
-            st.session_state.exercicios[nivel].append(nome_exercicio)  # Adiciona o novo exercício
-            st.session_state.exercicio_nome = nome_exercicio
-            st.session_state.exercicio_criado = True  # Marca que o exercício foi criado
-            st.success(f"Exercício '{nome_exercicio}' criado com sucesso!")
+# Função para buscar os exercícios de um nível
+def get_exercises(level_id):
+    connection = sqlite3.connect('exercises.db')
+    cursor = connection.cursor()
+    cursor.execute('SELECT id, name, code_path, markdown_path, completed FROM exercises WHERE level_id = ?', (level_id,))
+    exercises = cursor.fetchall()
+    connection.close()
+    return exercises
 
-# Layout do título e botão "Criar" no topo
-col1, col2 = st.columns([5, 1])
+# Função para marcar exercício como feito
+def mark_as_done(exercise_id):
+    connection = sqlite3.connect('exercises.db')
+    cursor = connection.cursor()
+    cursor.execute('UPDATE exercises SET completed = 1 WHERE id = ?', (exercise_id,))
+    connection.commit()
+    connection.close()
 
-with col1:
-    st.title("Questões")
+# Função para listar os níveis de exercícios
+def list_levels():
+    connection = sqlite3.connect('exercises.db')
+    cursor = connection.cursor()
+    cursor.execute('SELECT id, name FROM levels')
+    levels = cursor.fetchall()
+    connection.close()
+    return levels
 
-with col2:
-    if st.button("Criar Novo Nível"):
-        # Quando o botão "Criar Novo Nível" for clicado, exibe um campo de texto para adicionar um novo nível
-        st.session_state.selected_level = None  # Limpa o nível selecionado
-        novo_nivel = st.text_input("Digite o nome do novo nível:")
-        if st.button("Adicionar Novo Nível") and novo_nivel:
-            novo_nivel = novo_nivel.strip()  # Limpeza do nome do nível
-            if novo_nivel not in st.session_state.niveis:
-                st.session_state.niveis.append(novo_nivel)  # Adiciona o novo nível à lista
-                st.session_state.exercicios[novo_nivel] = []  # Cria a chave para os exercícios desse nível
-                st.success(f"Nível '{novo_nivel}' criado com sucesso!")  # Mensagem de sucesso
-                st.experimental_rerun()  # Recarrega a página para refletir o novo nível
-            else:
-                st.error(f"O nível '{novo_nivel}' já existe.")
+# Função para listar as pastas de exercício
+def list_exercise_directories():
+    # Caminho onde os exercícios estão armazenados
+    base_path = "exercícios"
+    level_dirs = []
 
-# Se o usuário não tiver escolhido um nível, exibe a tela inicial
-if "selected_level" not in st.session_state:
-    st.session_state.selected_level = None  # Inicializa o valor, caso não esteja presente ainda
+    # Verifica se o caminho base existe
+    if os.path.exists(base_path):
+        # Lista todos os diretórios dentro de "exercicios"
+        level_dirs = [d for d in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, d))]
 
-# Se o usuário não estiver logado, exibe a tela inicial de login
-if not st.session_state.selected_level:
-    exibir_nivel_caixas()  # Exibe os botões de seleção de nível
-else:
-    st.write(f"Você está logado no nível: {st.session_state.selected_level}")
+        # Ordenar os diretórios de forma numérica (do nível 1 ao nível 10)
+        level_dirs.sort(key=lambda x: int(x.split()[-1]))  # Ordena pelos números dos níveis
 
-    # Exibe os exercícios criados para o nível selecionado
-    st.subheader("Exercícios Criados:")
-    for exercicio in st.session_state.exercicios[st.session_state.selected_level]:
-        st.markdown(f"- {exercicio}")  # Exibe o exercício
-
-    # Mostra o nome do exercício ou exibe que nenhum foi selecionado
-    if st.session_state.exercicio_criado:
-        st.write(f"Nome do exercício: {st.session_state.exercicio_nome}")
+        st.write(f"Caminho base: {os.path.abspath(base_path)}")  # Exibe o caminho absoluto para debugging
     else:
-        mostrar_input_exercicio(st.session_state.selected_level)
+        st.write(f"O diretório '{base_path}' não foi encontrado.")
 
-    # O botão "Voltar para escolha do nível" deve estar disponível em todas as etapas
-    if st.button("Voltar para escolha do nível"):
-        st.session_state.pop("selected_level", None)
-        st.session_state.pop("exercicio_nome", None)
-        st.session_state.pop("exercicio_criado", None)
-        st.rerun()  # Recarrega a página
+    return level_dirs
+
+# Função para listar os arquivos dentro de um diretório
+def list_files_in_directory(directory):
+    try:
+        # Verifica se o diretório existe
+        if os.path.exists(directory):
+            # Lista os arquivos no diretório
+            files = os.listdir(directory)
+            st.write(f"Arquivos encontrados em {directory}: {files}")  # Exibe os arquivos para debugging
+            return files
+        else:
+            st.write(f"O diretório {directory} não existe.")
+            return None
+    except Exception as e:
+        st.write(f"Erro ao acessar o diretório: {e}")
+        return None
+
+# Criar o banco de dados e as tabelas caso ainda não exista
+create_db()
+
+# Layout do título
+st.title("Gestão de Exercícios de Python")
+
+# Obter níveis do banco
+levels = list_levels()
+
+# Verificar se há níveis
+if levels:
+    level_names = [level[1] for level in levels]
+    selected_level_name = st.selectbox("Escolha um nível", level_names)
+
+    # Obter o id do nível selecionado
+    selected_level_id = next(level[0] for level in levels if level[1] == selected_level_name)
+
+    # Exibir os exercícios do nível selecionado
+    st.subheader("Exercícios Criados")
+    exercises = get_exercises(selected_level_id)
+
+    # Exibir os exercícios em layout de carrossel (lado a lado)
+    if exercises:
+        exercise_count = len(exercises)
+        exercises_per_page = 3  # Número de exercícios por "página"
+        max_page = (exercise_count // exercises_per_page) + (1 if exercise_count % exercises_per_page > 0 else 0)
+
+        page = st.slider("Escolha a página", min_value=0, max_value=max_page - 1, step=1)
+
+        start = page * exercises_per_page
+        end = start + exercises_per_page
+        exer_page = exercises[start:end]
+
+        cols = st.columns(exercises_per_page)
+
+        for i, exercise in enumerate(exer_page):
+            with cols[i % exercises_per_page]:
+                # Adicionando uma borda ao redor de cada exercício
+                with st.container():
+                    st.markdown(f"""
+                    <div style='border: 2px solid #ddd; padding: 10px; border-radius: 8px; margin-bottom: 10px;'>
+                    <p><strong>Exercício:</strong> {exercise[1]}</p>
+                    <p><strong>Código:</strong> {exercise[2]}</p>
+                    <p><strong>Markdown:</strong> {exercise[3]}</p>
+                    <p><strong>Status:</strong> {'Feito' if exercise[4] == 1 else 'Não Feito'}</p>
+                    """, unsafe_allow_html=True)
+
+                    if exercise[4] == 0:
+                        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)  # Centraliza o botão
+                        if st.button("Marcar como Feita", key=exercise[0]):
+                            mark_as_done(exercise[0])
+                            st.success(f"Exercício '{exercise[1]}' marcado como feito!")
+                        st.markdown("</div>", unsafe_allow_html=True)
+                    st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.write("Nenhum exercício criado ainda.")
+else:
+    st.write("Nenhum nível encontrado. Por favor, crie um nível abaixo.")
+
+# Criação de um novo nível
+st.subheader("Criar Novo Nível")
+new_level_name = st.text_input("Nome do novo nível")
+if st.button("Criar Novo Nível") and new_level_name:
+    create_level(new_level_name)
+
+# Criação de um novo exercício
+st.subheader("Criar Novo Exercício")
+exercise_name = st.text_input("Nome do exercício")
+
+# Listar as pastas de exercício para selecionar o caminho
+level_dirs = list_exercise_directories()
+
+# Verificar se há pastas e exibir as opções
+if level_dirs:
+    selected_code_path = st.selectbox("Escolha o caminho do arquivo .py", level_dirs)
+    selected_markdown_path = st.selectbox("Escolha o caminho do arquivo .md", level_dirs)
+
+    # Verificar os arquivos dentro das pastas selecionadas
+    code_files = list_files_in_directory(os.path.join("exercícios", selected_code_path))
+    markdown_files = list_files_in_directory(os.path.join("exercícios", selected_markdown_path))
+
+    # Exibir os arquivos encontrados para validar
+    st.write("Arquivos de código encontrados:", code_files)
+    st.write("Arquivos de markdown encontrados:", markdown_files)
+
+    if st.button("Criar Exercício") and exercise_name and selected_code_path and selected_markdown_path:
+        code_path = os.path.join("exercicios", selected_code_path, "Imprimir_valores.py")  # Exemplo de caminho para o código
+        markdown_path = os.path.join("exercicios", selected_markdown_path, "Estudos.md")  # Exemplo de caminho para o markdown
+        create_exercise(selected_level_id, exercise_name, code_path, markdown_path)
+else:
+    st.write("Nenhuma pasta encontrada para selecionar. Certifique-se de que as pastas de exercício estão corretamente configuradas.")
