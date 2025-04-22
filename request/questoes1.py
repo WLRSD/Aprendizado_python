@@ -63,6 +63,7 @@ def mark_as_done(exercise_id):
     connection.commit()
     connection.close()
 
+
 def list_levels():
     connection = sqlite3.connect('exercises.db')
     cursor = connection.cursor()
