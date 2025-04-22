@@ -17,3 +17,7 @@ Com isso, o valor que irá aparecer, se printado, será somente o valor inteiro.
 
 ###### O int funciona como uma função, mas é um construtor de tipo. Ou seja, ele cria um objeto do tipo  inteiro a partir do valor fornecido e uma função é algo que realiza uma ação ou cálculo, geralmente criado em um bloco de código a partir da palavra-chave **def**.
 
+
+
+sobre listas: métodos de lista
+![listas](image.png)

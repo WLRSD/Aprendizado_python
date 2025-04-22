@@ -1,11 +1,9 @@
 import sqlite3
 
-# Função para criar o banco de dados e as tabelas
 def create_db():
-    connection = sqlite3.connect('exercises.db')  # Cria ou abre o banco de dados
+    connection = sqlite3.connect('exercises.db')  
     cursor = connection.cursor()
 
-    # Criar tabela 'levels' (níveis de exercício)
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS levels (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -13,7 +11,6 @@ def create_db():
     );
     ''')
 
-    # Criar tabela 'exercises' (exercícios)
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS exercises (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,8 +23,7 @@ def create_db():
     );
     ''')
 
-    connection.commit()  # Confirma as mudanças
-    connection.close()  # Fecha a conexão com o banco
+    connection.commit() 
+    connection.close() 
 
-# Chama a função para criar o banco de dados e as tabelas
 create_db()
