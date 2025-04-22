@@ -47,5 +47,12 @@ else:
     print("Não precisa de guarda-chuva.")
     
 # Cálculo de um inteiro/decimal e um float, ou seja, cálculo entre tipos númericos diferentes
+def calculate():
+    num1 = 10  
+    num2 = 5.5  
+    result = num1 + num2
+    print(result)
+
+calculate()
 
 
