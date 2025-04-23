@@ -57,7 +57,7 @@ print(my_dict)
 #%%
 
 # 9. Faça um programa que percorre um dicionário e imprime as chaves e valores
-my_dict = {"name": "Alice", "age": 25, "city": "New York"}
+my_dict = {"name": ["Alice", "Andreza"], "age": [25, 26], "city": ["New York", "Brazil"]}
 for key, value in my_dict.items():
     print(key, value)
 #%%
