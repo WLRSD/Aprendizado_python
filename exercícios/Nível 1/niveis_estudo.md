@@ -57,6 +57,7 @@ Personalização de gráficos para análise de dados.
 
 ##### módulos: typing e pydantics
 boas práticas.
+módulos são qualquer tipo de aquivo com extensão .py, mas idealmente, um módulo contém instruções, funções e definições de classes que giram em torno de um proósito semelhante.
 
 ##### Nível 5: Conceitos Avançados e Performance
 ##### Estruturas de Dados Avançadas
