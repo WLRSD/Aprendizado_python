@@ -18,7 +18,7 @@ connection_string = f'oracle+cx_oracle://{username}:{password}@{host}:{port}/?se
  
 # Criação do engine
 engine = create_engine(connection_string)
-sql="SELECT * FROM ORAATDOW0002.INRO_ATDT WHERE ROWNUM <= 50"
+sql="SELECT * FROM SCHEMA.TABELA WHERE ROWNUM <= 50"
  
 with engine.connect() as connection:
     result = connection.execute(text(sql))
