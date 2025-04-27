@@ -54,3 +54,42 @@ if second_address >= third_address:
     print(f'O {formatted_tuple[1]} está mais longe')
 else:
     print(f'O {formatted_tuple[2]} está mais longe')
+    
+    # multi-line
+laptop = {
+  'brand': 'Apple',
+  'model': 'Macbook Pro',
+  'size': 14,
+  'year': 2023
+}
+print(laptop['brand'])
+
+# Creating a dictionary
+student_info = {'name': 'Alice', 'age': 9, 'grade': 'A'}
+
+# Accessing dictionary elements
+print('Name:', student_info['name'])
+print('Age:', student_info['age'])
+print('Grade:', student_info['grade'])
+
+# Modifying dictionary elements
+student_info['age'] = 10
+print('Updated Age:', student_info['age'])
+
+# Dictionary methods
+print('Keys:', student_info.keys())
+print('Values:', student_info.values())
+print('Items:', student_info.items())
+
+#exercício de dicionário:
+
+museum = {
+  'artist': ['Branca de neve', 'Homem-aranha', 'Superman'],
+  'period': [1963, 1989, 1994],
+  'date': ['21-12-1963', '32-09-1989', '14-02-1994']
+}
+
+print(museum)
+print('Keys:', museum.keys())
+print('Values:', museum.values())
+print('Items:', museum.items())
