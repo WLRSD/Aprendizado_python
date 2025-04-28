@@ -1,0 +1,4 @@
+# Projeto de estudos
+esse é um projeto que visa trabalhar o nível de conhecimentos adquiridos com o tempo sobre Python. O foco é manter esse projeto ativo e melhorar sempre que possível para que possa servir de roadmap para outro usuários e também como um "caderno com cola" para revisitar sempre que possível para relembrar conceitos do python ou buscar resoluções criadas para problemas encontrados durante a jornada.
+
+atualmente o código conta com um modelo web, criado em streamlit, para que possa ser feito a criação de exercícios baseados em níveis de conhecimento. Em breve pretendo adicionar uma aba/rota que possa guardar todos as soluções para problemas reais vistos em cases reais.
