@@ -70,10 +70,21 @@
 # respectivos preços, na sequência. No final, mostre uma listagem de preços, organizados
 # os dados em forma tabular
 
-listagem = ("Pão", 0.75, "Pão de queijo", 3.0, "Café preto", 1.0, "Leite", 2.75, "Macarrão", 1.78)
+# listagem = ("Pão", 0.75, "Pão de queijo", 3.0, "Café preto", 1.0, "Leite", 2.75, "Macarrão", 1.78)
 
-for item in range(0, len(listagem)):
-    if item % 2 == 0:
-        print(f"{listagem[item]:.<30}", end="")
-    else:
-        print(f"R${listagem[item]:>10}")
+# for item in range(0, len(listagem)):
+#     if item % 2 == 0:
+#         print(f"{listagem[item]:.<30}", end="")
+#     else:
+#         print(f"R${listagem[item]:>10}")
+
+# Exercício 77: Crie um programa que tenha uma tupla com várias palvras. Depois disso
+# você deve mostrar, para cada palavra, quais são as suas vogais
+
+texto = ("Aprender", "Caminhar", "Deitar", "Dormir", "Agnes", "Warlison", "Quezia")
+
+for palavra in texto:
+    print(f"\nNa palavra {palavra}, temos ", end="")
+    for letra in palavra:
+        if letra.lower() in "aeiou":
+            print(letra, end=" ")
