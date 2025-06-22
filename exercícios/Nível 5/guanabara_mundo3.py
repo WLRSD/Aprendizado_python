@@ -1,3 +1,5 @@
+# exercício 72: Criar com tuplas números por extenso, e ao usuário informar um número, dentro do escopo 
+# oferecido, ele retornar o nome por extenso
 valores_extenso = ("um", "dois", "três", "quatro", "cinco")
 valor_numerico = (1, 2, 3, 4, 5)
 
@@ -7,6 +9,6 @@ while True:
         valor_mostrar = valores_extenso[valor_usu - 1]
         break
     else:
-        print("Valor inválido, tente novamente.")
+        print("Valor inválido, tente novamente.") 
 
 print(valor_mostrar)
