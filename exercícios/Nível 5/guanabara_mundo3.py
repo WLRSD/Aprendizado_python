@@ -46,21 +46,34 @@
 # Em que posição foi digitado o primeiro valor 1
 # Quais foram os números pares
 
-contador = 0
-lembrar_numeros = []
-while contador < 4:
-    numero = (int(input("Digite um número: ")))
-    lembrar_numeros.append(numero)
-    contador += 1
+# contador = 0
+# lembrar_numeros = []
+# while contador < 4:
+#     numero = (int(input("Digite um número: ")))
+#     lembrar_numeros.append(numero)
+#     contador += 1
     
-lembrar_numeros = tuple(lembrar_numeros)
-print(lembrar_numeros)
-print(f"Quantas vezes apareceu o número 7: {lembrar_numeros.count(7)} vezes")
-if 1 in lembrar_numeros:
-    print(f"O valor 1 apareceu na {lembrar_numeros.index(1)+1}° posição")
-else:
-    print("O valor 1 não foi digitado")
-print("Os valores pares digitados foram: ", end="")
-for numero in lembrar_numeros:
-   if numero % 2 == 0:
-        print(numero, end=" ")
+# lembrar_numeros = tuple(lembrar_numeros)
+# print(lembrar_numeros)
+# print(f"Quantas vezes apareceu o número 7: {lembrar_numeros.count(7)} vezes")
+# if 1 in lembrar_numeros:
+#     print(f"O valor 1 apareceu na {lembrar_numeros.index(1)+1}° posição")
+# else:
+#     print("O valor 1 não foi digitado")
+# print("Os valores pares digitados foram: ", end="")
+# for numero in lembrar_numeros:
+#    if numero % 2 == 0:
+#         print(numero, end=" ")
+
+
+# Exercício 76: Crie um programa que tenha uma tupla única com nomes e produtos e seus 
+# respectivos preços, na sequência. No final, mostre uma listagem de preços, organizados
+# os dados em forma tabular
+
+listagem = ("Pão", 0.75, "Pão de queijo", 3.0, "Café preto", 1.0, "Leite", 2.75, "Macarrão", 1.78)
+
+for item in range(0, len(listagem)):
+    if item % 2 == 0:
+        print(f"{listagem[item]:.<30}", end="")
+    else:
+        print(f"R${listagem[item]:>10}")
