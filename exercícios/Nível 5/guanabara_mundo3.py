@@ -27,17 +27,40 @@
 # Exercício 74: Crie um programa que gere 5 números aleatórios e coloque em uma tupla
 # Depois disso, mostre a listagem de números gerados e também indique o menor e o maior
 
-from random import randint
+# from random import randint
 
-numero_randomico = (randint(1,10), randint(1,10), randint(1,10), randint(1,10), 
-                    randint(1,10))
+# numero_randomico = (randint(1,10), randint(1,10), randint(1,10), randint(1,10), 
+#                     randint(1,10))
 
-print(f"Os valores foram: {numero_randomico}", end="")  
+# print(f"Os valores foram: {numero_randomico}", end="")  
 
-for criacao in numero_randomico:
-    print(f"{numero_randomico} ", end="")
+# for criacao in numero_randomico:
+#     print(f"{numero_randomico} ", end="")
     
-print(f"\nO maior valor dentro da tupla foi: {max(numero_randomico)}")
-print(f"\nO menor valor dentro da tupla foi: {min(numero_randomico)}")
+# print(f"\nO maior valor dentro da tupla foi: {max(numero_randomico)}")
+# print(f"\nO menor valor dentro da tupla foi: {min(numero_randomico)}")
     
+# Exercício 75: Crie um programa que leia quatro valores pelo teclado e guarde-os
+# em uma tupla. No final, mostre: 
+# Quantas vezes apareceu o 7
+# Em que posição foi digitado o primeiro valor 1
+# Quais foram os números pares
 
+contador = 0
+lembrar_numeros = []
+while contador < 4:
+    numero = (int(input("Digite um número: ")))
+    lembrar_numeros.append(numero)
+    contador += 1
+    
+lembrar_numeros = tuple(lembrar_numeros)
+print(lembrar_numeros)
+print(f"Quantas vezes apareceu o número 7: {lembrar_numeros.count(7)} vezes")
+if 1 in lembrar_numeros:
+    print(f"O valor 1 apareceu na {lembrar_numeros.index(1)+1}° posição")
+else:
+    print("O valor 1 não foi digitado")
+print("Os valores pares digitados foram: ", end="")
+for numero in lembrar_numeros:
+   if numero % 2 == 0:
+        print(numero, end=" ")
