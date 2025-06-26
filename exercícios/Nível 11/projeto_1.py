@@ -5,7 +5,7 @@ def game_start():
     print("Você é um aventureiro renomado, conhecido por sua coragem e astúcia. Rumores de um artefato antigo com poderes inimagináveis o levaram a uma floresta densa e misteriosa. A lenda diz que o artefato está escondido em um templo esquecido, guardado por criaturas místicas e armadilhas mortais.")
     print("\nVocê se encontra na Entrada da Floresta.")
     print("Uma trilha estreita se abre para uma floresta escura e silenciosa. O ar é pesado e a luz do sol mal penetra as copas das árvores.")
-    choose_path('entrada_floresta')
+    choose_path ('entrada_floresta')
 
 def choose_path(location):
     if location == 'entrada_floresta':
