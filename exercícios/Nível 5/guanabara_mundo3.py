@@ -81,10 +81,12 @@
 # Exercício 77: Crie um programa que tenha uma tupla com várias palvras. Depois disso
 # você deve mostrar, para cada palavra, quais são as suas vogais
 
-texto = ("Aprender", "Caminhar", "Deitar", "Dormir", "Agnes", "Warlison", "Quezia")
+# texto = ("Aprender", "Caminhar", "Deitar", "Dormir", "Agnes", "Warlison", "Quezia")
 
-for palavra in texto:
-    print(f"\nNa palavra {palavra}, temos ", end="")
-    for letra in palavra:
-        if letra.lower() in "aeiou":
-            print(letra, end=" ")
+# for palavra in texto:
+#     print(f"\nNa palavra {palavra}, temos ", end="")
+#     for letra in palavra:
+#         if letra.lower() in "aeiou":
+#             print(letra, end=" ")
+
+# Exercício 78:
